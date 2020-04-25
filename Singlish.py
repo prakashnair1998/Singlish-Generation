@@ -6,7 +6,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
 
 with open(
-        '/Users/Prakash/Downloads/the-national-university-of-singapore-sms-corpus/smsCorpus_en_2015.03.09_all.json') as f:
+        'C:\Users\Prakash\Desktop\Projects\smsCorpus_en_2015.03.09_all.json') as f:
     data = json.load(f)
 
 total_words = 10000
