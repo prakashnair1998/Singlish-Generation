@@ -6,7 +6,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
 
 with open(
-        'C:\Users\Prakash\Desktop\Projects\smsCorpus_en_2015.03.09_all.json') as f:
+        '/Users/Prakash/Downloads/the-national-university-of-singapore-sms-corpus/smsCorpus_en_2015.03.09_all.json') as f:
     data = json.load(f)
 
 total_words = 10000
@@ -32,7 +32,7 @@ def create_dataset(raw_dataset):
     x_train, y_train = input_sequences[:, :-1], input_sequences[:, -1]
     y_train = tf.keras.utils.to_categorical(y_train)
 
-    return x_train, y_train
+    return x_train, y_train, tokenizer, max_sequence_len
 
 
 X_train, Y_train = create_dataset(data)
@@ -48,11 +48,23 @@ def Model(x_train, y_train):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     history = model.fit(x_train, y_train, epochs=20, verbose=1, validation_split=0.1)
 
-    return history
+    return history, model
 
 
+# seed_text = 'Sample seed text'
 
-
+def predict_next_words(model, seed_text, tokenizer, max_sequence_len, next_words=10):
+    for _ in range(next_words):
+        token_list = tokenizer.texts_to_sequences([seed_text])[0]
+        token_list = pad_sequences([token_list], maxlen=max_sequence_len - 1, padding='pre')
+        predicted = model.predict_classes(token_list, verbose=0)
+        output_word = ""
+        for word, index in tokenizer.word_index.items():
+            if index == predicted:
+                output_word = word
+                break
+        seed_text += " " + output_word
+    print(seed_text)
 
 
 
